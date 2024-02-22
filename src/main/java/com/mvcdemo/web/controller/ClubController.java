@@ -2,8 +2,12 @@ package com.mvcdemo.web.controller;
 
 import com.mvcdemo.web.dto.ClubDto;
 import com.mvcdemo.web.models.Club;
+import com.mvcdemo.web.models.UserEntity;
+import com.mvcdemo.web.security.SecurityUtil;
 import com.mvcdemo.web.service.ClubService;
+import com.mvcdemo.web.service.UserService;
 import jakarta.validation.Valid;
+import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.jpa.repository.Query;
@@ -20,10 +24,14 @@ import com.mvcdemo.web.models.Club;
 @Controller
 public class ClubController {
     private ClubService clubService;
+    private UserService userService;
+
+
 
     @Autowired
-    public ClubController(ClubService clubService) {
+    public ClubController(ClubService clubService, UserService userService) {
         this.clubService = clubService;
+        this.userService = userService;
     }
 
     @GetMapping("")
@@ -33,8 +41,15 @@ public class ClubController {
 
     @GetMapping("/clubs")
     public String listClubs(Model model){
+        UserEntity user = new UserEntity();
         List<ClubDto> clubs = clubService.findAllClubs();
+        String username = SecurityUtil.getSessionUser();
+        if (username != null) {
+            user = userService.findByUsername(username);
+            model.addAttribute("user", user);
+        }
 
+        model.addAttribute("user", user);
         model.addAttribute("clubs", clubs);
         return "clubs-list";
     }

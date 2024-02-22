@@ -1,6 +1,7 @@
 package com.mvcdemo.web.dto;
 
 
+import com.mvcdemo.web.models.UserEntity;
 import groovyjarjarantlr4.v4.runtime.misc.NotNull;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -28,5 +29,6 @@ public class ClubDto {
     private String content;
     private LocalDateTime createdOn;
     private LocalDateTime updatedOn;
+    private UserEntity createdBy;
     private List<EventDto> events;
 }
